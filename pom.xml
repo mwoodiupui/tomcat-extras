@@ -1,0 +1,56 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.markhwood.tomcat</groupId>
+    <artifactId>Tomcat-IP-Valve</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Tomcat-IP-Valve</name>
+    <description>
+        Allow or deny requests to Apache Tomcat, based on a whitespace-separated
+        list of IP addresses with optional CIDR mask length.
+    </description>
+    <url>http://maven.apache.org</url>
+    <inceptionYear>2013</inceptionYear>
+
+    <developers>
+        <developer>
+            <id>mhwood</id>
+            <email>mhwood@Ameritech.Net</email>
+            <name>Mark H. Wood</name>
+            <timezone>-5</timezone>
+        </developer>
+    </developers>
+
+    <prerequisites>
+        <maven>3.0</maven>
+    </prerequisites>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-coyote</artifactId>
+            <version>7.0.35</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>7.0.35</version>
+        </dependency>
+    </dependencies>
+</project>
