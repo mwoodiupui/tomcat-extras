@@ -27,6 +27,9 @@
             <email>mhwood@Ameritech.Net</email>
             <name>Mark H. Wood</name>
             <timezone>-5</timezone>
+            <properties>
+                <ORCiD>0000-0002-9558-3768</ORCiD>
+            </properties>
         </developer>
     </developers>
 
@@ -50,7 +53,7 @@
     <scm>
         <connection>scm:git:git@github.com:mwoodiupui/tomcat-extras.git</connection>
         <developerConnection>scm:git:git@github.com:mwoodiupui/tomcat-extras.git</developerConnection>
-        <url>git@github.com:mwoodiupui/tomcat-extras.git</url>
+        <url>http://github.com/mwoodiupui/tomcat-extras</url>
     </scm>
 
     <issueManagement>
