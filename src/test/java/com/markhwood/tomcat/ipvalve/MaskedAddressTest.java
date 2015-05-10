@@ -1,9 +1,24 @@
-/*
- * Copyright 2013 Mark H. Wood.
- * MHW, 17-Mar-2013
- */
-
 package com.markhwood.tomcat.ipvalve;
+
+/*
+ * #%L
+ * Tomcat-IP-Valve
+ * %%
+ * Copyright (C) 2013 - 2015 Mark H. Wood
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -42,6 +57,8 @@ public class MaskedAddressTest
 
     /**
      * Test of matches method, of class MaskedAddress.
+     *
+     * @throws java.net.UnknownHostException
      */
     @Test
     public void testMatches()
@@ -57,7 +74,7 @@ public class MaskedAddressTest
 
         comparand = InetAddress.getByName("10.0.0.1");
         result = instance.matches(comparand);
-        assertTrue("10.0.0.1 should NOT match 12.34.56.78/16", result);
+        assertFalse("10.0.0.1 should NOT match 12.34.56.78/16", result);
 
         // TODO lots more trials
     }

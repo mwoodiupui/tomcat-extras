@@ -13,8 +13,13 @@
         Allow or deny requests to Apache Tomcat, based on a whitespace-separated
         list of IP addresses with optional CIDR mask length.
     </description>
-    <url>http://maven.apache.org</url>
+    <url>https://github.com/mwoodiupui/tomcat-extras</url>
     <inceptionYear>2013</inceptionYear>
+
+    <organization>
+        <name>Mark H. Wood</name>
+        <url>https://sites.google.com/site/mhwoodmypage/</url>
+    </organization>
 
     <developers>
         <developer>
@@ -34,6 +39,46 @@
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
+
+    <licenses>
+        <license>
+            <name>Apache License</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:mwoodiupui/tomcat-extras.git</connection>
+        <developerConnection>scm:git:git@github.com:mwoodiupui/tomcat-extras.git</developerConnection>
+        <url>git@github.com:mwoodiupui/tomcat-extras.git</url>
+    </scm>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/mwoodiupui/tomcat-extras/issues</url>
+    </issueManagement>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.8</version>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.8</version>
+                <configuration>
+                    <licenseName>apache_v2</licenseName>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
