@@ -37,9 +37,10 @@ import org.apache.catalina.valves.RequestFilterValve;
  * {@link org.apache.catalina.valves.RemoteAddrValve}.
  * <p>
  * Configured rules are tested against the current source address, in order of
- * appearance.  The first rule which permits the address will cause it to be
- * accepted.  If no rule permits the address, the request is denied.  If no
- * rules have been configured, the address is accepted.
+ * appearance.  First the deny rules are tested.  If a deny rule matches, the
+ * request is denied.  If no deny rule matches, and there are no accept rules,
+ * the request is accepted.  If an accept rule matches, the request is accepted.
+ * Otherwise the request is denied.
  * </p>
  *
  * @author mhwood
@@ -53,6 +54,7 @@ public class IPAddressValve
     @Override
     public void setAllow(String allows)
     {
+        containerLog.debug("setAllow " + allows);
         allowValid = false;
         allowValue = allows;
         allowPatterns = makePatterns(allows);
@@ -62,6 +64,7 @@ public class IPAddressValve
     @Override
     public void setDeny(String denies)
     {
+        containerLog.debug("setDeny " + denies);
         denyValid = false;
         denyValue = denies;
         denyPatterns = makePatterns(denies);
@@ -81,23 +84,26 @@ public class IPAddressValve
         {
             if (pattern.matches(remoteAddress))
             {
+                containerLog.debug("Denied");
                 denyRequest(rqst, rspns);
+                return;
             }
         }
 
         // If allowPatterns.empty() then allow the request.
         if (allowPatterns.isEmpty())
+        {
+            containerLog.debug("Accepted by default");
+            getNext().invoke(rqst, rspns);
             return;
+        }
 
         // Not denied, so check allowed.
         for (MaskedAddress pattern : allowPatterns)
         {
             if (pattern.matches(remoteAddress))
             {
-                if (null != next)
-                {
-                    next.invoke(rqst, rspns);
-                }
+                getNext().invoke(rqst, rspns);
                 return;
             }
         }
