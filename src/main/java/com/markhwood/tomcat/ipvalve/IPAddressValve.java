@@ -94,7 +94,8 @@ public class IPAddressValve
         if (allowPatterns.isEmpty())
         {
             containerLog.debug("Accepted by default");
-            getNext().invoke(rqst, rspns);
+            if (null != next)
+                next.invoke(rqst, rspns);
             return;
         }
 
@@ -103,8 +104,9 @@ public class IPAddressValve
         {
             if (pattern.matches(remoteAddress))
             {
-                getNext().invoke(rqst, rspns);
-                return;
+            if (null != next)
+                next.invoke(rqst, rspns);
+            return;
             }
         }
 
