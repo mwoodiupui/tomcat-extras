@@ -48,8 +48,8 @@ import org.apache.catalina.valves.RequestFilterValve;
 public class IPAddressValve
         extends RequestFilterValve
 {
-    List<MaskedAddress> allowPatterns;
-    List<MaskedAddress> denyPatterns;
+    List<MaskedAddress> allowPatterns = new ArrayList<>();
+    List<MaskedAddress> denyPatterns = new ArrayList<>();
 
     @Override
     public void setAllow(String allows)
