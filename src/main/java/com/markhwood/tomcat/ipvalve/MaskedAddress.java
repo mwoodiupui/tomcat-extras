@@ -23,6 +23,8 @@ package com.markhwood.tomcat.ipvalve;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Holds an IPv4 or IPv6 address and a mask exposing leading significant bits,
@@ -32,11 +34,14 @@ import java.net.UnknownHostException;
  */
 public class MaskedAddress
 {
+    private static final Logger log = Logger.getLogger(MaskedAddress.class.getName());
+
     private int maskBits;
 
     private BigInteger address;
 
     private BigInteger mask;
+
     private int addressSize;
 
     /**
@@ -74,14 +79,25 @@ public class MaskedAddress
     boolean matches(InetAddress comparand)
     {
         BigInteger candidate = new BigInteger(comparand.getAddress());
-        System.out.printf("candidate:  %s\n", hexdump(candidate.toByteArray()));
         BigInteger difference = candidate.xor(address);
-        System.out.printf("difference:  %s\n", hexdump(difference.toByteArray()));
         BigInteger significance = difference.and(mask);
-        System.out.printf("significance:  %s\n", hexdump(significance.toByteArray()));
+
+        if (log.isLoggable(Level.FINE))
+        {
+            log.log(Level.FINE, "candidate:  {0}", hexdump(candidate.toByteArray()));
+            log.log(Level.FINE, "difference:  {0}", hexdump(difference.toByteArray()));
+            log.log(Level.FINE, "significance:  {0}", hexdump(significance.toByteArray()));
+        }
+
         return significance.equals(BigInteger.ZERO);
     }
 
+    /**
+     * Debugging aid:  display bytes in readable form.
+     *
+     * @param in to be formatted.
+     * @return {@link in} formatted as hexadecimal.
+     */
     private String hexdump(byte[] in)
     {
         StringBuilder bupher = new StringBuilder();
@@ -92,7 +108,7 @@ public class MaskedAddress
         return bupher.toString();
     }
 
-    public final void setAddress(String address)
+    private void setAddress(String address)
             throws UnknownHostException
     {
         byte[] addressBits = InetAddress.getByName(address).getAddress();
@@ -103,15 +119,15 @@ public class MaskedAddress
     byte[] getAddress() { return address.toByteArray(); }
 
     /**
-     * Create a mask excluding trailing insignificant bits.
+     * Create a mask to exclude trailing insignificant address bits.
      *
      * @param maskBits Number of leading significant bits.  If negative, calculate
      *                  a mask with all one bits -- this matches only one address.
      */
-    public final void setMask(int maskBits)
+    private void setMask(int maskBits)
     {
         this.maskBits = maskBits;
-        byte[] masq = new byte[addressSize]; // FIXME may not be set yet!
+        byte[] masq = new byte[addressSize];
         if (maskBits < 0) maskBits = addressSize * 8;
         for (int i = 0; i < maskBits; i++)
         {
