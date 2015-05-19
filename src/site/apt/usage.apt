@@ -1,0 +1,63 @@
+     ---
+     Usage
+
+Usage
+
+  IPAddressValve allows or denies requests, based on the client's IP 
+address.  It may be added to the content of any container (Host, 
+Context, etc.)
+
+* Configuration
+
+  You may specify a list of 'allow' patterns and/or a list of 'deny' 
+patterns.  Each list is a sequence of patterns separated by whitespace.  
+Each pattern consists of an IPv4 or IPv6 address, and an optional mask 
+width separated by a forward slash.  (See 
+{{http://tools.ietf.org/html/rfc4632#page-5}} for discussion.)  If no 
+mask width is specified, a full-width mask is assumed, causing the 
+expression to match only the single address given.
+
+  The client IP address of an incoming request is tested against each 
+address/mask expression in the sequence they are written.  Consider the 
+expression 111.222.333.0/24.  The client address is ANDed with a mask 
+consisting of 24 leading '1' bits followed by 8 (32-24) trailing '0' 
+bits, and then compared with 111.222.333.0.  If the resultis equal then 
+the expression matches the address.  The first match concludes the 
+testing for that list.
+
+  Testing proceeds in order:
+
+  [[1]] The client address is tested with the 'deny' list.  If a 'deny' 
+        expression matches, then the request is denied.  If there is no 
+        match, or there is no 'deny' list, testing continues.
+
+  [[2]] If there is no 'accept' list, the request is accepted.  
+        Otherwise testing continues.
+
+  [[3]] The client address is tested with the 'accept' list.  If an 
+        'accept' expression matches, then the request is accepted.  
+
+  [[4]] Otherwise the request is denied.
+
+  []
+
+* Example
+
++--
+<Context path='foo'>
+  <Valve className='com.markhwood.tomcat.ipvalve.IPAddressValve'
+         allow='
+           127.0.0.1
+           ::1
+           192.168.0.0/16
+         '
+         deny='
+           192.168.200.0/24
+         '/>
+</Context>
++--
+
+  This configuration accepts requests from the IPv4 localhost 
+(127.0.0.1), the IPv6 localhost ("::1"), or any address in the 
+block 192.168.0.0 - 192.168.255.255 <<except>> addresses in the block 
+192.168.200.0 - 192.168.200.255.
