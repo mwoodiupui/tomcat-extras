@@ -1,11 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+			     http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.markhwood.tomcat</groupId>
     <artifactId>Tomcat-IP-Valve</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Tomcat-IP-Valve</name>
@@ -41,6 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
+	<tomcat.version>7.0.81</tomcat.version>
     </properties>
 
     <licenses>
@@ -101,6 +103,21 @@
                     </ignoredUnusedDeclaredDependencies>
                 </configuration>
             </plugin>
+	    <plugin>
+	        <groupId>external.atlassian.jgitflow</groupId>
+	        <artifactId>jgitflow-maven-plugin</artifactId>
+		<version>1.0-m5.1</version>
+		<dependencies>
+		    <dependency>
+		        <groupId>com.jcraft</groupId>
+		        <artifactId>jsch</artifactId>
+		        <version>0.1.54</version>
+		    </dependency>
+		</dependencies>
+		<configuration>
+		    <noDeploy>true</noDeploy>
+		</configuration>
+	    </plugin>
         </plugins>
     </build>
 
@@ -114,25 +131,25 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-catalina</artifactId>
-            <version>7.0.35</version>
+            <version>${tomcat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
-            <version>7.0.35</version>
+            <version>${tomcat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-juli</artifactId>
-            <version>7.0.35</version>
+            <version>${tomcat.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-coyote</artifactId>
-            <version>7.0.35</version>
+            <version>${tomcat.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

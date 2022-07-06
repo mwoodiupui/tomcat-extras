@@ -28,30 +28,33 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
+
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.RequestFilterValve;
+import org.apache.juli.logging.LogFactory;
+import org.apache.juli.logging.Log;
 
 /**
  * Permit or deny requests according to the client address, from a list of
- * address/mask specifications.  This is arguably a better fit to the way people
- * think about IP addresses than the regular-expression matching offered by
- * {@link org.apache.catalina.valves.RemoteAddrValve}.
+ * address/mask specifications.  This is arguably a better fit to the way
+ * people think about IP addresses than the regular-expression matching
+ * offered by {@link org.apache.catalina.valves.RemoteAddrValve}.
  *
  * <p>
- * Configuration is as with other {@link RequestFilterValve} subclasses such as
- * RemoteAddrValve:  the Valve element's 'allow' and
+ * Configuration is as with other {@link RequestFilterValve} subclasses such
+ * as RemoteAddrValve:  the Valve element's 'allow' and
  * 'deny' attributes supply patterns of addresses allowed and denied access.
  * Unlike that class, this one takes for each a whitespace-separated list of
  * address/mask rules.
  * </p>
  *
  * <p>
- * Configured rules are tested against the current source address, in order of
- * appearance.  First the deny rules are tested.  If a deny rule matches, the
- * request is denied.  If no deny rule matches, and there are no accept rules,
- * the request is accepted.  If an accept rule matches, the request is accepted.
- * Otherwise the request is denied.
+ * Configured rules are tested against the current source address, in order
+ * of appearance.  First the deny rules are tested.  If a deny rule matches,
+ * the request is denied.  If no deny rule matches, and there are no accept
+ * rules, the request is accepted.  If an accept rule matches, the request
+ * is accepted.  Otherwise the request is denied.
  * </p>
  *
  * @author mhwood
@@ -59,7 +62,8 @@ import org.apache.catalina.valves.RequestFilterValve;
 public class IPAddressValve
         extends RequestFilterValve
 {
-    private static final Logger log = Logger.getLogger(IPAddressValve.class.getName());
+    private static final Log log
+        = LogFactory.getLog(IPAddressValve.class.getName());
 
     /** Matchers for allowed address blocks. */
     List<MaskedAddress> allowPatterns = new ArrayList<>();
@@ -72,6 +76,11 @@ public class IPAddressValve
             = "Allow/deny requests by CIDR-masked IPv4 or IPv6 address.";
 
     @Override
+    public Log getLog() {
+        return log;
+    }
+
+    @Override
     public String getInfo()
     {
         return info;
@@ -80,14 +89,15 @@ public class IPAddressValve
     @Override
     public void setAllow(String allows)
     {
-        log.log(Level.CONFIG, "setAllow {0}", allows);
+        log.debug("setAllow " + allows);
         allowValid = false;
         allowValue = allows;
         try {
             allowPatterns = makePatterns(allows);
         } catch (Exception e) {
-            log.log(Level.WARNING, "Invalid 'allow' rule in {0} : {1}",
-                    new Object[]{allows, e.getMessage()});
+            log.warn("Invalid 'allow' rule in "
+                     + allows + " : "
+                     + e.getMessage());
             return;
         }
         allowValid = true;
@@ -96,14 +106,15 @@ public class IPAddressValve
     @Override
     public void setDeny(String denies)
     {
-        log.log(Level.CONFIG, "setDeny {0}", denies);
+        log.debug("setDeny " + denies);
         denyValid = false;
         denyValue = denies;
         try {
             denyPatterns = makePatterns(denies);
         } catch (Exception e) {
-            log.log(Level.WARNING, "Invalid 'deny' rule in {0} : {1}",
-                    new Object[]{denies, e.getMessage()});
+            log.warn("Invalid 'deny' rule in "
+                     + denies + " : "
+                     + e.getMessage());
             return;
         }
         denyValid = true;
@@ -122,7 +133,7 @@ public class IPAddressValve
         {
             if (pattern.matches(remoteAddress))
             {
-                log.finest("Denied by rule");
+                log.debug("Denied by rule");
                 denyRequest(rqst, rspns);
                 return;
             }
@@ -131,7 +142,7 @@ public class IPAddressValve
         // If allowPatterns.empty() then allow the request.
         if (allowPatterns.isEmpty())
         {
-            log.finest("Accepted by default");
+            log.debug("Accepted by default");
             if (null != next)
                 next.invoke(rqst, rspns);
             return;
@@ -142,7 +153,7 @@ public class IPAddressValve
         {
             if (pattern.matches(remoteAddress))
             {
-                log.finest("Accepted by rule");
+                log.debug("Accepted by rule");
                 if (null != next)
                     next.invoke(rqst, rspns);
                 return;
@@ -150,7 +161,7 @@ public class IPAddressValve
         }
 
         // No match!
-        log.finest("Denied by default");
+        log.debug("Denied by default");
         denyRequest(rqst, rspns);
     }
 
@@ -171,7 +182,7 @@ public class IPAddressValve
         List<MaskedAddress> patterns = new ArrayList<>();
         for (String rule : rules)
         {
-            log.log(Level.FINE, "pattern ''{0}''", rule);
+            log.debug("pattern ''" + rule + "''");
 
             // Discard leading whitespace
             if (rule.isEmpty())
@@ -179,7 +190,10 @@ public class IPAddressValve
 
             // Create a MaskedAddress from each pattern, if possible.
             String[] parts = rule.split("/", 2);
-            log.log(Level.FINE, "parts ''{0}'' / ''{1}'' / ''{2}''", parts);
+            log.debug("parts ''" + parts[0]
+                      + "'' / ''" + parts[1]
+                      + "'' / ''" + parts[2]
+                      + "''");
             MaskedAddress pattern;
             switch (parts.length)
             {
